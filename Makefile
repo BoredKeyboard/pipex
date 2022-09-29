@@ -6,16 +6,18 @@
 #    By: mforstho <mforstho@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/09/27 15:13:27 by mforstho      #+#    #+#                  #
-#    Updated: 2022/09/27 15:14:02 by mforstho      ########   odam.nl          #
+#    Updated: 2022/09/29 18:17:04 by mforstho      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 NAME := pipex
 CC := gcc
-CFLAGS ?= -Wextra -Wall -Werror
+CFLAGS ?= -Wextra -Wall -Werror # -g -fsanitize=address
 
-SOURCES :=									\
-	src/pipex.c
+SOURCES :=			\
+	src/pipex.c		\
+	src/px_exec.c	\
+	src/px_path.c
 
 HEADERS := src/pipex.h libft/libft.h
 OBJDIR := obj
