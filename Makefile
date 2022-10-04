@@ -6,7 +6,7 @@
 #    By: mforstho <mforstho@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/09/27 15:13:27 by mforstho      #+#    #+#                  #
-#    Updated: 2022/09/29 18:17:04 by mforstho      ########   odam.nl          #
+#    Updated: 2022/10/04 16:33:16 by mforstho      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ HEADERS := src/pipex.h libft/libft.h
 OBJDIR := obj
 OBJECTS := $(addprefix $(OBJDIR)/, $(SOURCES:c=o))
 
-LIBFLAGS := -L libft -l ft -l glfw3 -framework Cocoa -framework OpenGL -framework IOKit
+LIBFLAGS := -L libft -l ft
 
 LIBFT := libft/libft.a
 

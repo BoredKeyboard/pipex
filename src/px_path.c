@@ -6,7 +6,7 @@
 /*   By: mforstho <mforstho@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/09/29 18:13:20 by mforstho      #+#    #+#                 */
-/*   Updated: 2022/09/29 18:19:17 by mforstho      ########   odam.nl         */
+/*   Updated: 2022/10/03 15:02:38 by mforstho      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ char	*append_command(char *path, char *command)
 
 	len = ft_strlen(path) + ft_strlen(command) + 2;
 	cmd_path = malloc(len);
+	if (cmd_path == NULL)
+		exit_error("pipex");
 	cmd_path[0] = '\0';
 	ft_strlcat(cmd_path, path, len);
 	ft_strlcat(cmd_path, "/", len);

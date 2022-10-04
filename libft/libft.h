@@ -6,7 +6,7 @@
 /*   By: mforstho <mforstho@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/07 17:00:30 by mforstho      #+#    #+#                 */
-/*   Updated: 2022/09/14 14:40:50 by mforstho      ########   odam.nl         */
+/*   Updated: 2022/10/03 12:03:10 by mforstho      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@
 # include <stdbool.h>
 # include <limits.h>
 
-bool			ft_atoi(const char *str, int *result);
+bool			ft_atoi(const char *str, int *result)
+				__attribute__((__warn_unused_result__));
 void			ft_bzero(void *s, size_t n);
 void			*ft_calloc(size_t count, size_t size);
 int				ft_isalnum(int c);

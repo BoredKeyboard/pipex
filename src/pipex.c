@@ -6,17 +6,11 @@
 /*   By: mforstho <mforstho@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/09/27 17:19:11 by mforstho      #+#    #+#                 */
-/*   Updated: 2022/09/29 18:14:47 by mforstho      ########   odam.nl         */
+/*   Updated: 2022/10/04 16:14:50 by mforstho      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-void	leakfunction(void)
-{
-	ft_putendl_fd("", STDOUT_FILENO);
-	system("leaks -q pipex");
-}
 
 void	exit_error(char *prefix)
 {
@@ -28,7 +22,6 @@ int	main(int argc, char *argv[], char *envp[])
 {
 	int		pipe_fds[2];
 
-	atexit(leakfunction);
 	if (argc != 5)
 	{
 		ft_putendl_fd("pipex: incorrect number of arguments", STDOUT_FILENO);
