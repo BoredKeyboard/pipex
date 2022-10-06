@@ -6,7 +6,7 @@
 #    By: mforstho <mforstho@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2022/09/27 15:13:27 by mforstho      #+#    #+#                  #
-#    Updated: 2022/10/04 16:33:16 by mforstho      ########   odam.nl          #
+#    Updated: 2022/10/06 16:37:40 by mforstho      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ HEADERS := src/pipex.h libft/libft.h
 OBJDIR := obj
 OBJECTS := $(addprefix $(OBJDIR)/, $(SOURCES:c=o))
 
-LIBFLAGS := -L libft -l ft
+LIBFLAGS := -Llibft -lft
 
 LIBFT := libft/libft.a
 
@@ -33,7 +33,7 @@ CFLAGS += $(INCLUDES)
 all : $(NAME)
 
 $(NAME) : $(OBJECTS) $(LIBFT)
-	$(CC) $(CFLAGS) $(LIBFLAGS) $(OBJECTS) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJECTS) $(LIBFLAGS) -o $(NAME)
 
 $(OBJDIR)/%.o : %.c $(HEADERS)
 	@mkdir -p $(@D)

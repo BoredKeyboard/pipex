@@ -6,29 +6,28 @@
 /*   By: mforstho <mforstho@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/09/29 18:13:20 by mforstho      #+#    #+#                 */
-/*   Updated: 2022/10/03 15:02:38 by mforstho      ########   odam.nl         */
+/*   Updated: 2022/10/06 16:08:29 by mforstho      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*append_command(char *path, char *command)
+char	*append_command(char *path, char *command, t_free_this *free_these)
 {
-	size_t	len;
+	size_t	size;
 	char	*cmd_path;
 
-	len = ft_strlen(path) + ft_strlen(command) + 2;
-	cmd_path = malloc(len);
+	size = ft_strlen(path) + ft_strlen(command) + 2;
+	cmd_path = malloc(size);
 	if (cmd_path == NULL)
-		exit_error("pipex");
-	cmd_path[0] = '\0';
-	ft_strlcat(cmd_path, path, len);
-	ft_strlcat(cmd_path, "/", len);
-	ft_strlcat(cmd_path, command, len);
+		exit_error("pipex", free_these);
+	ft_strlcpy(cmd_path, path, size);
+	ft_strlcat(cmd_path, "/", size);
+	ft_strlcat(cmd_path, command, size);
 	return (cmd_path);
 }
 
-char	*search_path(char **path_arr, char *command)
+char	*search_path(char **path_arr, char *command, t_free_this *free_these)
 {
 	int		i;
 	char	*file_path;
@@ -38,7 +37,7 @@ char	*search_path(char **path_arr, char *command)
 	i = 0;
 	while (path_arr[i] != NULL)
 	{
-		file_path = append_command(path_arr[i], command);
+		file_path = append_command(path_arr[i], command, free_these);
 		if (access(file_path, X_OK) == 0)
 			return (file_path);
 		free(file_path);
@@ -75,27 +74,27 @@ char	**get_path_array(char *envp[])
 	return (ft_split(path, ':'));
 }
 
-char	*resolve_command_path(char *cmd, char *envp[])
+char	*resolve_command_path(char *cmd, t_data *data, t_free_this *free_these)
 {
 	char	*file_path;
 
-	if (cmd == NULL)
-		return (NULL);
 	if (ft_strchr(cmd, '/') != NULL)
 	{
 		if (access(cmd, X_OK) == -1)
 		{
 			ft_putstr_fd("pipex: ", STDERR_FILENO);
-			exit_error(cmd);
+			exit_error(cmd, free_these);
 		}
-		return (cmd);
+		return (ft_strdup(cmd));
 	}
-	file_path = search_path(get_path_array(envp), cmd);
+	free_these->path_array = get_path_array(data->envp);
+	file_path = search_path(free_these->path_array, cmd, free_these);
 	if (file_path == NULL)
 	{
 		ft_putstr_fd("pipex: ", STDERR_FILENO);
 		ft_putstr_fd(cmd, STDERR_FILENO);
 		ft_putendl_fd(": command not found", STDERR_FILENO);
+		free_em(free_these);
 		exit(EXIT_FAILURE);
 	}
 	return (file_path);

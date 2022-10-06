@@ -6,72 +6,78 @@
 /*   By: mforstho <mforstho@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/09/29 18:14:27 by mforstho      #+#    #+#                 */
-/*   Updated: 2022/09/29 18:19:20 by mforstho      ########   odam.nl         */
+/*   Updated: 2022/10/06 16:35:22 by mforstho      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	exec_command(int infile, int outfile, char *cmd, char *envp[])
+void	exec_command(t_data *data, t_free_this *free_these, char *cmd)
 {
-	char	*file_path;
-	char	**command;
-
-	command = ft_split(cmd, ' ');
-	if (command == NULL)
-		exit_error("pipex");
-	file_path = resolve_command_path(command[0], envp);
-	if (dup2(infile, STDIN_FILENO) == -1)
-		exit_error("pipex: dup2");
-	if (dup2(outfile, STDOUT_FILENO) == -1)
-		exit_error("pipex: dup2");
-	if (file_path != NULL)
+	free_these->command = ft_split(cmd, ' ');
+	if (free_these->command == NULL)
+		exit_error("pipex", free_these);
+	free_these->command_path = NULL;
+	if (free_these->command[0] != NULL)
 	{
-		if (execve(file_path, command, envp) == -1)
-			exit_error("pipex: execve");
+		free_these->command_path = resolve_command_path(free_these->command[0],
+				data, free_these);
+		if (free_these->command_path == NULL)
+			exit_error("pipex", free_these);
 	}
+	if (dup2(data->input, STDIN_FILENO) == -1)
+		exit_error("pipex: dup2", free_these);
+	if (dup2(data->output, STDOUT_FILENO) == -1)
+		exit_error("pipex: dup2", free_these);
+	if (free_these->command_path != NULL)
+	{
+		if (execve(free_these->command_path,
+				free_these->command, data->envp) == -1)
+			exit_error("pipex: execve", free_these);
+	}
+	free_em(free_these);
 	exit(EXIT_SUCCESS);
 }
 
-pid_t	exec_left(int pipe_fds[2], char *infile, char *cmd, char *envp[])
+pid_t	exec_left(int pipe_fds[2], t_data *data, t_free_this *free_these)
 {
-	int		opened_fd;
 	pid_t	pid;
 
 	pid = fork();
 	if (pid == -1)
-		exit_error("pipex: fork");
+		exit_error("pipex: fork", free_these);
 	if (pid == 0)
 	{
 		close(pipe_fds[READ]);
-		opened_fd = open(infile, O_RDONLY);
-		if (opened_fd == -1)
+		data->output = pipe_fds[WRITE];
+		data->input = open(data->infile, O_RDONLY);
+		if (data->input == -1)
 		{
 			ft_putstr_fd("pipex: ", STDERR_FILENO);
-			exit_error(infile);
+			exit_error(data->infile, free_these);
 		}
-		exec_command(opened_fd, pipe_fds[WRITE], cmd, envp);
+		exec_command(data, free_these, data->cmd1);
 	}
 	return (pid);
 }
 
-pid_t	exec_right(int pipe_fds[2], char *outfile, char *cmd, char *envp[])
+pid_t	exec_right(int pipe_fds[2], t_data *data, t_free_this *free_these)
 {
-	int		opened_fd;
 	pid_t	pid;
 
 	pid = fork();
 	if (pid == -1)
-		exit_error("pipex: fork");
+		exit_error("pipex: fork", free_these);
 	if (pid == 0)
 	{
-		opened_fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (opened_fd == -1)
+		data->output = open(data->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (data->output == -1)
 		{
 			ft_putstr_fd("pipex: ", STDERR_FILENO);
-			exit_error(outfile);
+			exit_error(data->outfile, free_these);
 		}
-		exec_command(pipe_fds[READ], opened_fd, cmd, envp);
+		data->input = pipe_fds[READ];
+		exec_command(data, free_these, data->cmd2);
 	}
 	return (pid);
 }
