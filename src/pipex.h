@@ -6,7 +6,7 @@
 /*   By: mforstho <mforstho@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/09/28 16:09:20 by mforstho      #+#    #+#                 */
-/*   Updated: 2022/10/06 16:18:59 by mforstho      ########   odam.nl         */
+/*   Updated: 2022/10/06 17:11:46 by mforstho      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ typedef struct s_free_this {
 	char	**path_array;
 }	t_free_this;
 
-void	free_array(char **arr);
 void	free_em(t_free_this *free_these);
 void	exit_error(char *prefix, t_free_this *free_these);
 
@@ -50,6 +49,7 @@ char	*get_envp_var(char *envp[], char *var_name);
 char	**get_path_array(char *envp[]);
 char	*resolve_command_path(char *cmd, t_data *data, t_free_this *free_these);
 
+void	free_array(char **arr);
 void	exec_command(t_data *data, t_free_this *free_these, char *cmd);
 pid_t	exec_left(int pipe_fds[2], t_data *data, t_free_this *free_these);
 pid_t	exec_right(int pipe_fds[2], t_data *data, t_free_this *free_these);

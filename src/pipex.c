@@ -6,26 +6,11 @@
 /*   By: mforstho <mforstho@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/09/27 17:19:11 by mforstho      #+#    #+#                 */
-/*   Updated: 2022/10/06 16:35:32 by mforstho      ########   odam.nl         */
+/*   Updated: 2022/10/06 17:11:24 by mforstho      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-void	free_array(char **arr)
-{
-	int	y;
-
-	if (arr == NULL)
-		return ;
-	y = 0;
-	while (arr[y] != NULL)
-	{
-		free(arr[y]);
-		y++;
-	}
-	free(arr);
-}
 
 void	free_em(t_free_this *free_these)
 {
@@ -52,11 +37,25 @@ static void	initialize_data(t_data *data, int argc, char *argv[], char *envp[])
 	data->envp = envp;
 }
 
+int	wait_for_children(pid_t pid_right)
+{
+	int	stat_loc;
+	int	return_value;
+
+	return_value = EXIT_SUCCESS;
+	if (wait(&stat_loc) == pid_right)
+		return_value = WEXITSTATUS(stat_loc);
+	if (wait(&stat_loc) == pid_right)
+		return_value = WEXITSTATUS(stat_loc);
+	return (return_value);
+}
+
 int	main(int argc, char *argv[], char *envp[])
 {
 	t_data		data;
 	t_free_this	free_these;
 	int			pipe_fds[2];
+	pid_t		pid_right;
 
 	ft_bzero(&free_these, sizeof(free_these));
 	initialize_data(&data, argc, argv, envp);
@@ -69,10 +68,8 @@ int	main(int argc, char *argv[], char *envp[])
 		exit_error("pipex: pipe", &free_these);
 	exec_left(pipe_fds, &data, &free_these);
 	close(pipe_fds[WRITE]);
-	exec_right(pipe_fds, &data, &free_these);
+	pid_right = exec_right(pipe_fds, &data, &free_these);
 	close(pipe_fds[READ]);
 	free_em(&free_these);
-	wait(NULL);
-	wait(NULL);
-	return (EXIT_SUCCESS);
+	return (wait_for_children(pid_right));
 }

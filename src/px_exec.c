@@ -6,11 +6,26 @@
 /*   By: mforstho <mforstho@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/09/29 18:14:27 by mforstho      #+#    #+#                 */
-/*   Updated: 2022/10/06 16:35:22 by mforstho      ########   odam.nl         */
+/*   Updated: 2022/10/06 17:11:29 by mforstho      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+void	free_array(char **arr)
+{
+	int	y;
+
+	if (arr == NULL)
+		return ;
+	y = 0;
+	while (arr[y] != NULL)
+	{
+		free(arr[y]);
+		y++;
+	}
+	free(arr);
+}
 
 void	exec_command(t_data *data, t_free_this *free_these, char *cmd)
 {
