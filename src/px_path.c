@@ -6,7 +6,7 @@
 /*   By: mforstho <mforstho@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/09/29 18:13:20 by mforstho      #+#    #+#                 */
-/*   Updated: 2022/10/12 11:54:53 by mforstho      ########   odam.nl         */
+/*   Updated: 2022/10/12 11:59:31 by mforstho      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ char	*search_path(char **path_arr, char *command, t_free_this *free_these)
 	if (seen)
 	{
 		ft_putstr_fd("pipex: ", STDERR_FILENO);
-		errno = EPERM;
+		errno = EACCES;
 		exit_error(command, free_these);
 	}
 	return (NULL);
