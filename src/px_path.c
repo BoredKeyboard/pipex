@@ -6,11 +6,12 @@
 /*   By: mforstho <mforstho@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/09/29 18:13:20 by mforstho      #+#    #+#                 */
-/*   Updated: 2022/10/06 16:08:29 by mforstho      ########   odam.nl         */
+/*   Updated: 2022/10/12 11:54:53 by mforstho      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+#include <errno.h>
 
 char	*append_command(char *path, char *command, t_free_this *free_these)
 {
@@ -31,17 +32,27 @@ char	*search_path(char **path_arr, char *command, t_free_this *free_these)
 {
 	int		i;
 	char	*file_path;
+	bool	seen;
 
-	if (path_arr == NULL)
-		return (NULL);
+	seen = false;
 	i = 0;
 	while (path_arr[i] != NULL)
 	{
 		file_path = append_command(path_arr[i], command, free_these);
-		if (access(file_path, X_OK) == 0)
-			return (file_path);
+		if (access(file_path, F_OK) == 0)
+		{
+			seen = true;
+			if (access(file_path, X_OK) == 0)
+				return (file_path);
+		}
 		free(file_path);
 		i++;
+	}
+	if (seen)
+	{
+		ft_putstr_fd("pipex: ", STDERR_FILENO);
+		errno = EPERM;
+		exit_error(command, free_these);
 	}
 	return (NULL);
 }
@@ -88,7 +99,9 @@ char	*resolve_command_path(char *cmd, t_data *data, t_free_this *free_these)
 		return (ft_strdup(cmd));
 	}
 	free_these->path_array = get_path_array(data->envp);
-	file_path = search_path(free_these->path_array, cmd, free_these);
+	file_path = NULL;
+	if (free_these->path_array != NULL)
+		file_path = search_path(free_these->path_array, cmd, free_these);
 	if (file_path == NULL)
 	{
 		ft_putstr_fd("pipex: ", STDERR_FILENO);
