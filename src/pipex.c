@@ -6,7 +6,7 @@
 /*   By: mforstho <mforstho@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/09/27 17:19:11 by mforstho      #+#    #+#                 */
-/*   Updated: 2022/10/06 17:11:24 by mforstho      ########   odam.nl         */
+/*   Updated: 2022/10/13 12:31:24 by mforstho      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@ void	free_em(t_free_this *free_these)
 	free_array(free_these->path_array);
 }
 
-void	exit_error(char *prefix, t_free_this *free_these)
+void	exit_error(char *prefix, t_free_this *free_these, int exit_status)
 {
 	perror(prefix);
 	if (free_these != NULL)
 		free_em(free_these);
-	exit(EXIT_FAILURE);
+	exit(exit_status);
 }
 
 static void	initialize_data(t_data *data, int argc, char *argv[], char *envp[])
@@ -65,7 +65,7 @@ int	main(int argc, char *argv[], char *envp[])
 		return (EXIT_FAILURE);
 	}
 	if (pipe(pipe_fds) == -1)
-		exit_error("pipex: pipe", &free_these);
+		exit_error("pipex: pipe", &free_these, EXIT_FAILURE);
 	exec_left(pipe_fds, &data, &free_these);
 	close(pipe_fds[WRITE]);
 	pid_right = exec_right(pipe_fds, &data, &free_these);

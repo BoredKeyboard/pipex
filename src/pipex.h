@@ -6,7 +6,7 @@
 /*   By: mforstho <mforstho@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/09/28 16:09:20 by mforstho      #+#    #+#                 */
-/*   Updated: 2022/10/06 17:11:46 by mforstho      ########   odam.nl         */
+/*   Updated: 2022/10/13 12:31:09 by mforstho      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ typedef struct s_free_this {
 }	t_free_this;
 
 void	free_em(t_free_this *free_these);
-void	exit_error(char *prefix, t_free_this *free_these);
+void	exit_error(char *prefix, t_free_this *free_these, int exit_status);
 
 char	*append_command(char *path, char *command, t_free_this *free_these);
 char	*search_path(char **path_arr, char *command, t_free_this *free_these);
